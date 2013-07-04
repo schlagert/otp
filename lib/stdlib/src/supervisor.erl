@@ -527,7 +527,8 @@ count_child(#child{pid = Pid, child_type = supervisor},
 %%% timer:apply_after(0,...) in order to give gen_server the chance to
 %%% check it's inbox before trying again.
 -spec handle_cast({try_again_restart, child_id() | pid()}, state()) ->
-			 {'noreply', state()} | {stop, shutdown, state()}.
+			 {'noreply', state()} |
+             {'stop', {'shutdown', term()}, state()}.
 
 handle_cast({try_again_restart,Pid}, #state{children=[Child]}=State)
   when ?is_simple(State) ->
@@ -540,8 +541,8 @@ handle_cast({try_again_restart,Pid}, #state{children=[Child]}=State)
 	    case restart(NChild,State) of
 		{ok, State1} ->
 		    {noreply, State1};
-		{shutdown, State1} ->
-		    {stop, shutdown, State1}
+		{{shutdown, Reason}, State1} ->
+		    {stop, {shutdown, Reason}, State1}
 	    end;
 	error ->
             {noreply, State}
@@ -553,8 +554,8 @@ handle_cast({try_again_restart,Name}, State) ->
 	    case restart(Child,State) of
 		{ok, State1} ->
 		    {noreply, State1};
-		{shutdown, State1} ->
-		    {stop, shutdown, State1}
+		{{shutdown, Reason}, State1} ->
+		    {stop, {shutdown, Reason}, State1}
 	    end;
 	_ ->
 	    {noreply,State}
@@ -564,14 +565,15 @@ handle_cast({try_again_restart,Name}, State) ->
 %% Take care of terminated children.
 %%
 -spec handle_info(term(), state()) ->
-        {'noreply', state()} | {'stop', 'shutdown', state()}.
+        {'noreply', state()} |
+        {'stop', {'shutdown', term()}, state()}.
 
 handle_info({'EXIT', Pid, Reason}, State) ->
     case restart_child(Pid, Reason, State) of
 	{ok, State1} ->
 	    {noreply, State1};
-	{shutdown, State1} ->
-	    {stop, shutdown, State1}
+	{{shutdown, SupReason}, State1} ->
+	    {stop, {shutdown, SupReason}, State1}
     end;
 
 handle_info(Msg, State) ->
@@ -696,7 +698,7 @@ handle_start_child(Child, State) ->
 
 %%% ---------------------------------------------------
 %%% Restart. A process has terminated.
-%%% Returns: {ok, state()} | {shutdown, state()}
+%%% Returns: {ok, state()} | {{shutdown, Reason}, state()}
 %%% ---------------------------------------------------
 
 restart_child(Pid, Reason, #state{children = [Child]} = State) when ?is_simple(State) ->
@@ -769,7 +771,15 @@ restart(Child, State) ->
 	{terminate, NState} ->
 	    report_error(shutdown, reached_max_restart_intensity,
 			 Child, State#state.name),
-	    {shutdown, remove_child(Child, NState)}
+            Id = if ?is_simple(NState) ->
+                         case Child#child.pid of
+                             ?restarting(Pid) -> Pid;
+                             Pid -> Pid
+                         end;
+                    true -> Child#child.name
+                 end,
+            Reason = {reached_max_restart_intensity, Id},
+	    {{shutdown, Reason}, remove_child(Child, NState)}
     end.
 
 restart(simple_one_for_one, Child, State) ->

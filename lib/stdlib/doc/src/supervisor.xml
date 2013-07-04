@@ -202,6 +202,15 @@ child_spec() = {Id,StartFunc,Restart,Shutdown,Type,Modules}
           pid exists.</p>
       </item>
     </list>
+    <p>If a supervisor fails to restart a child process it will terminate with
+      exit reason <c>{shutdown, Reason}</c>, where <c>Reason</c> provides more
+      details about the child process that caused the termination.
+      <note>
+        <p>Prior to OTP release <c>R17B</c> it was not possible to distinguish
+          between supervisor shutdown and exits caused by restart limits. Both
+          cases lead to an exit with reason <c>shutdown</c>.</p>
+      </note>
+    </p>
   </section>
   <datatypes>
     <datatype>
@@ -557,10 +566,9 @@ child_spec() = {Id,StartFunc,Restart,Shutdown,Type,Modules}
 
   <section>
     <title>SEE ALSO</title>
-    <p><seealso marker="gen_event">gen_event(3)</seealso>, 
-      <seealso marker="gen_fsm">gen_fsm(3)</seealso>, 
-      <seealso marker="gen_server">gen_server(3)</seealso>, 
+    <p><seealso marker="gen_event">gen_event(3)</seealso>,
+      <seealso marker="gen_fsm">gen_fsm(3)</seealso>,
+      <seealso marker="gen_server">gen_server(3)</seealso>,
       <seealso marker="sys">sys(3)</seealso></p>
   </section>
 </erlref>
-
