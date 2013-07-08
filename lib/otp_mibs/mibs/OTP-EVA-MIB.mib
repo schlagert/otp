@@ -1,19 +1,19 @@
 --
 -- %CopyrightBegin%
--- 
+--
 -- Copyright Ericsson AB 2004-2009. All Rights Reserved.
--- 
+--
 -- The contents of this file are subject to the Erlang Public License,
 -- Version 1.1, (the "License"); you may not use this file except in
 -- compliance with the License. You should have received a copy of the
 -- Erlang Public License along with this software. If not, it can be
 -- retrieved online at http://www.erlang.org/.
--- 
+--
 -- Software distributed under the License is distributed on an "AS IS"
 -- basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
 -- the License for the specific language governing rights and limitations
 -- under the License.
--- 
+--
 -- %CopyrightEnd%
 --
 
@@ -34,27 +34,27 @@ IMPORTS
     ;
 
 otpEvaModule MODULE-IDENTITY
-    LAST-UPDATED "0305090900Z"
+    LAST-UPDATED "200305090900Z"
     ORGANIZATION "Ericsson"
     CONTACT-INFO
        "Contact:  Erlang Support see license agreement for Erlang/OTP."
     DESCRIPTION
 	"This MIB is part of the OTP MIB.  It defines MIB objects
 	for the eva application in OTP."
-   
-    REVISION	"0305090900Z"
-    DESCRIPTION		
+
+    REVISION	"200305090900Z"
+    DESCRIPTION
         "Changed CONTACT-INFO as it was outdated, made it more generic
 	to avoid such changes in the future."
-    
-    REVISION     "9801270900Z"
+
+    REVISION     "199801270900Z"
     DESCRIPTION
         "Changed erroneous defintion of alarmCleared notification.
         Changed erroneous name of this module to otpEvaModule."
-    REVISION     "9712010900Z"
+    REVISION     "199712010900Z"
     DESCRIPTION
         "Converted to v2 SMI and placed in the OTP tree."
-    REVISION     "9705020900Z"
+    REVISION     "199705020900Z"
     DESCRIPTION
         "The initial version of this MIB module.  It is very much
         inspired by the ANS-ALM-MIB and Axd301Eva-OMS mibs."
@@ -331,7 +331,7 @@ alarmSeverity OBJECT-TYPE
     MAX-ACCESS  read-write
     STATUS      current
     DESCRIPTION
-        "The perceived severity that shall apply to the 
+        "The perceived severity that shall apply to the
         associated alarms."
     ::= { alarmEntry 2 }
 
@@ -458,7 +458,7 @@ currentAlarmExtra1 OBJECT-TYPE
     DESCRIPTION
         "An extra parameter used for some alarms at their own
         discretion.  Can be used for example to identify
-        additional objects in the alarm, or instead of 
+        additional objects in the alarm, or instead of
         currentAlarmInformation to pin-point the problem, if the
         additional information is defined in some MIB."
     ::= { currentAlarmEntry 8 }
@@ -470,7 +470,7 @@ currentAlarmExtra2 OBJECT-TYPE
     DESCRIPTION
         "An extra parameter used for some alarms at their own
         discretion.  Can be used for example to identify
-        additional objects in the alarm, or instead of 
+        additional objects in the alarm, or instead of
         currentAlarmInformation to pin-point the problem, if the
         additional information is defined in some MIB."
     ::= { currentAlarmEntry 9 }

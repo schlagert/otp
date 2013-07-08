@@ -1,27 +1,27 @@
 --
 -- %CopyrightBegin%
--- 
+--
 -- Copyright Ericsson AB 1996-2009. All Rights Reserved.
--- 
+--
 -- The contents of this file are subject to the Erlang Public License,
 -- Version 1.1, (the "License"); you may not use this file except in
 -- compliance with the License. You should have received a copy of the
 -- Erlang Public License along with this software. If not, it can be
 -- retrieved online at http://www.erlang.org/.
--- 
+--
 -- Software distributed under the License is distributed on an "AS IS"
 -- basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
 -- the License for the specific language governing rights and limitations
 -- under the License.
--- 
+--
 -- %CopyrightEnd%
 --
 
 OTP-MIB DEFINITIONS ::= BEGIN
- 
+
 IMPORTS
     MODULE-IDENTITY, OBJECT-TYPE,
-    Counter32, Gauge32, Integer32
+    Counter64, Counter32, Gauge32, Integer32
         FROM SNMPv2-SMI
     TEXTUAL-CONVENTION, DisplayString
         FROM SNMPv2-TC
@@ -32,7 +32,7 @@ IMPORTS
     ;
 
 otpModule MODULE-IDENTITY
-    LAST-UPDATED    "0305090900Z"
+    LAST-UPDATED    "201307081000Z"
     ORGANIZATION    "Ericsson"
     CONTACT-INFO
         "Contact:    Erlang Support see license agreement for Erlang/OTP."
@@ -41,16 +41,20 @@ otpModule MODULE-IDENTITY
         agent executing at one node only.  Each Erlang node in the
         OTP system is represented by one row in the erlNodeTable."
 
-    REVISION        "0305090900Z"
+    REVISION        "201307081000Z"
+    DESCRIPTION
+        "Updated erlNodeReductions field to be able to return large values."
+
+    REVISION        "200305090900Z"
     DESCRIPTION
         "Changed CONTACT-INFO as it was outdated, made it more generic
 	to avoid such changes in the future."
-    
-    REVISION        "9712010900Z"
+
+    REVISION        "199712010900Z"
     DESCRIPTION
         "Converted to v2 SMI and placed in the OTP tree."
 
-    REVISION        "9608191700Z"
+    REVISION        "199608191700Z"
     DESCRIPTION
         "The initial revision of MIB module OTP-MIB."
 
@@ -98,12 +102,12 @@ erlNodeEntry OBJECT-TYPE
 ErlNodeEntry ::= SEQUENCE {
     erlNodeId           Integer32,
     erlNodeName         DisplayString,
-    erlNodeMachine      DisplayString,      
+    erlNodeMachine      DisplayString,
     erlNodeVersion      DisplayString,
     erlNodeRunQueue     Gauge32,
     erlNodeRunTime      MilliSeconds,
     erlNodeWallClock    MilliSeconds,
-    erlNodeReductions   Counter32,
+    erlNodeReductions   Counter64,
     erlNodeProcesses    Gauge32,
     erlNodeInBytes      Counter32,
     erlNodeOutBytes     Counter32
@@ -154,7 +158,7 @@ erlNodeRunTime OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "Total cpu time in milliseconds since the 
+        "Total cpu time in milliseconds since the
         system started"
     ::= { erlNodeEntry 6 }
 
@@ -163,12 +167,12 @@ erlNodeWallClock OBJECT-TYPE
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
-        "Total real time in milliseconds since the 
+        "Total real time in milliseconds since the
         system started"
-    ::= { erlNodeEntry 7 }  
+    ::= { erlNodeEntry 7 }
 
 erlNodeReductions OBJECT-TYPE
-    SYNTAX      Counter32
+    SYNTAX      Counter64
     MAX-ACCESS  read-only
     STATUS      current
     DESCRIPTION
